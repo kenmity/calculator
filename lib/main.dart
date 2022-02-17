@@ -1,5 +1,7 @@
+import 'package:calculator/style/my_themes.dart';
 import 'package:flutter/material.dart';
-
+import 'package:math_expressions/math_expressions.dart';
+import 'style/material_colors.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -12,19 +14,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      themeMode: ThemeMode.light,
+      theme: MyThemes.lightTheme,
+      darkTheme:MyThemes.darkTheme,
+      home: const MyHomePage(title: 'calculator demo'),
     );
   }
 }
@@ -48,68 +41,405 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  String userInput = "" ;
+  String answer = "0" ;
+  String process = "" ;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color:Color.fromRGBO(157, 169, 117, 1.0)
+                ),
+                width: double.infinity,
+                height: 50,
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Text(
+                      (process == "") ? answer: process ,
+                      style: const TextStyle(
+                          fontSize: 30
+                      )
+                  ),
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: 'CE',
+                            press: (){
+                              setState(() {
+
+                                //刪除一個字
+                                if(userInput != ""){
+                                  String newUserInput = userInput.substring(0, userInput.length-1) ;
+                                  print(newUserInput) ;
+                                  userInput = newUserInput;
+                                  process = newUserInput;
+                                }else{
+                                  //全刪
+                                  userInput = "" ;
+                                  process = "" ;
+                                  answer = "0" ;
+                                }
+
+                              });
+                            }
+                        )
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '%',
+                            press: () {
+                              setState(() {
+                                userInput += '%' ;
+                                process += '%' ;
+                              });
+                            }
+                        )
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '÷',
+                            press: (){
+                              setState(() {
+                                userInput += '÷' ;
+                                process += '÷' ;
+                              });
+                            })
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: 'x',
+                            press: (){
+                              setState(() {
+                                userInput += 'x' ;
+                                process += 'x' ;
+                              });
+                            })
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '7',
+                            press: () {
+                              setState(() {
+                                userInput += '7' ;
+                                process += '7' ;
+                              });
+                            })
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '8',
+                            press: () {
+                              setState(() {
+                                userInput += '8' ;
+                                process += '8' ;
+                              });
+                            }
+                        )
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '9',
+                            press: (){
+                              setState(() {
+                                userInput += '9' ;
+                                process += '9' ;
+                              });
+                            })
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(text: '-',press: (){
+                          setState(() {
+                            userInput += '-' ;
+                            process += '-' ;
+                          });
+                        })
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '4',
+                            press: (){
+                              setState(() {
+                                userInput += '4' ;
+                                process += '4' ;
+                              });
+                            })
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '5',
+                            press: (){
+                              setState(() {
+                                userInput += '5' ;
+                                process += '5' ;
+                              });
+                            })
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '6',
+                            press: (){
+                              setState(() {
+                                userInput += '6' ;
+                                process += '6' ;
+                              });
+                            })
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '+',
+                            press: (){
+                              setState(() {
+                                userInput += '+' ;
+                                process += '+' ;
+                              });
+                            })
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child:  Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                  flex: 1,
+                                  child: RadiusButton(
+                                      text: '1',
+                                      press: (){
+                                        setState(() {
+                                          userInput += '1' ;
+                                          process += '1' ;
+                                        });
+                                      })
+                              ),
+                              Expanded(
+                                  flex: 1,
+                                  child: RadiusButton(
+                                      text: '2',
+                                      press: (){
+                                        setState(() {
+                                          userInput += '2' ;
+                                          process += '2' ;
+                                        });
+                                      })
+                              ),
+                              Expanded(
+                                  flex: 1,
+                                  child: RadiusButton(
+                                      text: '3',
+                                      press: (){
+                                        setState(() {
+                                          userInput += '3' ;
+                                          process += '3' ;
+                                        });
+                                      })
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: RadiusButton(
+                                      text: '0',
+                                      press: (){
+                                        setState(() {
+                                          userInput += '0' ;
+                                          process += '0' ;
+                                        });
+                                      })
+                              ),
+                              Expanded(
+                                  flex: 1,
+                                  child: RadiusButton(
+                                      text: '.',
+                                      press: (){
+                                        setState(() {
+                                          userInput += '.' ;
+                                          process += '.' ;
+                                        });
+                                      })
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: RadiusButton(
+                            text: '=',
+                            height: 170,
+                            color: Colors.white,
+                            backgroundColor: Colors.deepOrangeAccent,
+                            press: () {
+                              // String userInput = "3-2x3÷3";
+                              String finaluserinput = userInput;
+                              finaluserinput = userInput.replaceAll('x', '*').replaceAll('÷', '/').replaceAll('%', '/100');
+                              print(finaluserinput) ;
+
+                              try{
+                                Parser p = Parser();
+                                Expression exp = p.parse(finaluserinput);
+                                ContextModel cm = ContextModel();
+                                double eval = exp.evaluate(EvaluationType.REAL, cm);
+                                String res = eval.toString();
+                                setState(() {
+                                  userInput = "" ;
+                                  process = "" ;
+                                  answer = res ;
+                                });
+                              }catch(error){
+                                print(error) ;
+                                setState(() {
+                                  userInput = "" ;
+                                  process = "" ;
+                                  answer = "0";
+                                });
+                              }
+                            }
+                        )
+                    ),
+                  ],
+                ),
+              ],
             ),
+            Container(
+                width: double.infinity,
+                color: Colors.green,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RadiusButton(
+                          text: 'Dark',
+                          color: Colors.black,
+                          backgroundColor: Colors.white,
+                          press: (){
+
+                          }),
+                    ),
+                    Expanded(
+                      child: RadiusButton(
+                          text: 'Light',
+                          color: Colors.black,
+                          backgroundColor: Colors.white,
+                          press: (){
+
+                          }),
+                    ),
+                    Expanded(
+                      child: RadiusButton(
+                          text: 'Red',
+                          color: Colors.black,
+                          backgroundColor: Colors.white,
+                          press: (){
+
+                          }),
+                    ),
+                    Expanded(
+                      child: RadiusButton(
+                          text: 'Blue',
+                          color: Colors.black,
+                          backgroundColor: Colors.white,
+                          press: (){
+
+                          }),
+                    ),
+                  ],
+                )
+            )
+
           ],
+
+        )
+    );
+  }
+}
+
+
+//圓角按鈕
+class RadiusButton extends StatelessWidget {
+  const RadiusButton({
+    Key? key,
+    this.text,
+    this.width,
+    this.height,
+    this.color,
+    this.backgroundColor,
+    this.press,
+  }) : super(key: key);
+  final String? text;
+  final double? width;
+  final double? height;
+  final Color? color;
+  final Color? backgroundColor;
+  final Function? press;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: SizedBox(
+        width: width ?? 0,
+        height: height ?? 80,
+        child: TextButton(
+          style: TextButton.styleFrom(
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+            primary: Colors.white,
+            backgroundColor: backgroundColor ?? materialBlack.shade400,
+          ),
+          onPressed: press as void Function()?,
+          child: Text(
+            text!,
+            style: TextStyle(
+              fontSize: 30,
+              color: color ?? Colors.white,
+            ),
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
