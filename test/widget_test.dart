@@ -1,30 +1,74 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:calculator/provider/calculator_provider.dart';
+import 'package:calculator/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:calculator/main.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+// Widget createHomeScreen() => ChangeNotifierProvider<CalculatorProvider>(
+//   create: (context) => CalculatorProvider(),
+//   child: MaterialApp(
+//     home: MyHomePage(title: '計算機'),
+//   ),
+// );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+Widget createHomeScreen() => MultiProvider(
+  providers: [
+    ChangeNotifierProvider(create: (context) => ThemeProvider()),
+    ChangeNotifierProvider(create: (context) => CalculatorProvider()),
+  ],
+  child: const MaterialApp(
+    home: MyHomePage(title: '計算機'),
+  ),
+);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+void main(){
+
+  testWidgets('點擊1+1=2', (WidgetTester tester) async {
+    // ARRANGE
+    await tester.pumpWidget(createHomeScreen());
+    final text1 = find.text('1');
+    final text2 = find.text('+');
+    final text3 = find.text('1');
+    final text4 = find.text('=');
+    // ACT
+    await tester.tap(text1);
     await tester.pump();
+    await tester.tap(text2);
+    await tester.pump();
+    await tester.tap(text3);
+    await tester.pump();
+    await tester.tap(text4);
+    await tester.pump();
+    // ASSERT
+    expect(find.text('2'), findsNWidgets(2));
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('測試RadiusButton widgets，文字設定1和點擊後回傳true', (WidgetTester tester) async {
+    // ARRANGE
+    bool flag = false;
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child:RadiusButton(
+            text: '2',
+            press: (){
+              flag = true ;
+            }),
+      ),
+    ));
+
+    final text= find.text('2');
+    final button = find.byType(RadiusButton);
+    // ACT
+    await tester.tap(button);
+    await tester.pump();
+    // final titleFinder = find.text('計算機');
+    // final nultiplyFinder = find.text('x');
+    // ASSERT
+    expect(text, findsOneWidget);
+    expect(flag, true);
+    // expect(titleFinder, findsOneWidget);
+    // expect(nultiplyFinder, findsOneWidget);
   });
 }

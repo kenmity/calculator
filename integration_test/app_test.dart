@@ -11,7 +11,7 @@ Widget createHomeScreen() => MultiProvider(
     ChangeNotifierProvider(create: (context) => ThemeProvider()),
     ChangeNotifierProvider(create: (context) => CalculatorProvider()),
   ],
-  child: MaterialApp(
+  child: const MaterialApp(
     home: MyHomePage(title: '計算機'),
   ),
 );

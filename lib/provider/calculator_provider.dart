@@ -13,7 +13,7 @@ class CalculatorProvider extends ChangeNotifier{
   void removeUserInputOneChar(String userInput){
     String newUserInput = userInput.substring(0, userInput.length-1) ;
     this.userInput = newUserInput ;
-    this.process = newUserInput ;
+    process = newUserInput ;
     notifyListeners() ;
   }
 

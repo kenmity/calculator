@@ -4,7 +4,7 @@ import 'package:calculator/style/my_themes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:math_expressions/math_expressions.dart';
+// import 'package:math_expressions/math_expressions.dart';
 import 'package:provider/provider.dart';
 void main() {
 
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
-          actions: <Widget>[
+          actions: const <Widget>[
             ChangeThemeDarkSwitchButton()
           ],
         ),
@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color:Color.fromRGBO(157, 169, 117, 1.0)
+                    color:const Color.fromRGBO(157, 169, 117, 1.0)
                 ),
                 width: double.infinity,
                 height: 50,
