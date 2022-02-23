@@ -30,7 +30,7 @@ class MyThemes {
       scaffoldBackgroundColor:Colors.white,
       textTheme: TextTheme(
           button: GoogleFonts.lato(
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 14,
             )
           ),
