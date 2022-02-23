@@ -1,9 +1,28 @@
+import 'package:calculator/provider/calculator_provider.dart';
+import 'package:calculator/provider/theme_provider.dart';
 import 'package:calculator/style/my_themes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:math_expressions/math_expressions.dart';
-import 'style/material_colors.dart';
+import 'package:provider/provider.dart';
 void main() {
-  runApp(const MyApp());
+
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/noto_sans_tc/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['assets'], license);
+  });
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => CalculatorProvider()),
+        // Provider(create: (context) => SomeOtherClass()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -14,10 +33,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      themeMode: ThemeMode.light,
-      theme: MyThemes.lightTheme,
-      darkTheme:MyThemes.darkTheme,
-      home: const MyHomePage(title: 'calculator demo'),
+      themeMode: Provider.of<ThemeProvider>(context).themeMode,
+      // theme: MyThemes.lightTheme,
+      // darkTheme:MyThemes.darkTheme,
+
+      theme: themeTypeData[Provider.of<ThemeProvider>(context).themeType],
+      darkTheme:themeTypeData[Provider.of<ThemeProvider>(context).themeDarkType],
+      home: const MyHomePage(title: '計算機'),
     );
   }
 }
@@ -48,9 +70,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    // ThemeProvider themeProvider = Provider.of<ThemeProvider>(context) ;
+    CalculatorProvider calculatorProvider = Provider.of<CalculatorProvider>(context);
+
+    userInput = calculatorProvider.userInput ;
+    answer = calculatorProvider.answer ;
+    process = calculatorProvider.process ;
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          actions: <Widget>[
+            ChangeThemeDarkSwitchButton()
+          ],
         ),
         body: Column(
           children: [
@@ -88,15 +121,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                 //刪除一個字
                                 if(userInput != ""){
-                                  String newUserInput = userInput.substring(0, userInput.length-1) ;
-                                  print(newUserInput) ;
-                                  userInput = newUserInput;
-                                  process = newUserInput;
+                                  calculatorProvider.removeUserInputOneChar(userInput);
+                                  // calculatorProvider.setUserInput(newUserInput) ;
+                                  // calculatorProvider.setProcess(newUserInput) ;
+                                  // String newUserInput = userInput.substring(0, userInput.length-1) ;
+                                  // print(newUserInput) ;
+                                  // userInput = newUserInput;
+                                  // process = newUserInput;
                                 }else{
                                   //全刪
-                                  userInput = "" ;
-                                  process = "" ;
-                                  answer = "0" ;
+                                  calculatorProvider.clearAll() ;
+                                  // userInput = "" ;
+                                  // process = "" ;
+                                  // answer = "0" ;
                                 }
 
                               });
@@ -109,8 +146,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '%',
                             press: () {
                               setState(() {
-                                userInput += '%' ;
-                                process += '%' ;
+                                // userInput += '%' ;
+                                // process += '%' ;
+                                calculatorProvider.addUserInput('%') ;
+                                calculatorProvider.addProcess('%') ;
                               });
                             }
                         )
@@ -121,8 +160,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '÷',
                             press: (){
                               setState(() {
-                                userInput += '÷' ;
-                                process += '÷' ;
+                                // userInput += '÷' ;
+                                // process += '÷' ;
+
+                                calculatorProvider.addUserInput('÷') ;
+                                calculatorProvider.addProcess('÷') ;
                               });
                             })
                     ),
@@ -132,8 +174,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: 'x',
                             press: (){
                               setState(() {
-                                userInput += 'x' ;
-                                process += 'x' ;
+                                // userInput += 'x' ;
+                                // process += 'x' ;
+
+                                calculatorProvider.addUserInput('x') ;
+                                calculatorProvider.addProcess('x') ;
                               });
                             })
                     ),
@@ -147,8 +192,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '7',
                             press: () {
                               setState(() {
-                                userInput += '7' ;
-                                process += '7' ;
+                                // userInput += '7' ;
+                                // process += '7' ;
+
+                                calculatorProvider.addUserInput('7') ;
+                                calculatorProvider.addProcess('7') ;
                               });
                             })
                     ),
@@ -158,8 +206,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '8',
                             press: () {
                               setState(() {
-                                userInput += '8' ;
-                                process += '8' ;
+                                // userInput += '8' ;
+                                // process += '8' ;
+
+                                calculatorProvider.addUserInput('8') ;
+                                calculatorProvider.addProcess('8') ;
                               });
                             }
                         )
@@ -170,8 +221,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '9',
                             press: (){
                               setState(() {
-                                userInput += '9' ;
-                                process += '9' ;
+                                // userInput += '9' ;
+                                // process += '9' ;
+
+                                calculatorProvider.addUserInput('9') ;
+                                calculatorProvider.addProcess('9') ;
                               });
                             })
                     ),
@@ -179,8 +233,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         flex: 1,
                         child: RadiusButton(text: '-',press: (){
                           setState(() {
-                            userInput += '-' ;
-                            process += '-' ;
+                            // userInput += '-' ;
+                            // process += '-' ;
+
+                            calculatorProvider.addUserInput('-') ;
+                            calculatorProvider.addProcess('-') ;
                           });
                         })
                     ),
@@ -194,8 +251,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '4',
                             press: (){
                               setState(() {
-                                userInput += '4' ;
-                                process += '4' ;
+                                // userInput += '4' ;
+                                // process += '4' ;
+
+                                calculatorProvider.addUserInput('4') ;
+                                calculatorProvider.addProcess('4') ;
                               });
                             })
                     ),
@@ -205,8 +265,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '5',
                             press: (){
                               setState(() {
-                                userInput += '5' ;
-                                process += '5' ;
+                                // userInput += '5' ;
+                                // process += '5' ;
+
+                                calculatorProvider.addUserInput('5') ;
+                                calculatorProvider.addProcess('5') ;
                               });
                             })
                     ),
@@ -216,8 +279,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '6',
                             press: (){
                               setState(() {
-                                userInput += '6' ;
-                                process += '6' ;
+                                // userInput += '6' ;
+                                // process += '6' ;
+
+                                calculatorProvider.addUserInput('6') ;
+                                calculatorProvider.addProcess('6') ;
                               });
                             })
                     ),
@@ -227,8 +293,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: '+',
                             press: (){
                               setState(() {
-                                userInput += '+' ;
-                                process += '+' ;
+                                // userInput += '+' ;
+                                // process += '+' ;
+
+                                calculatorProvider.addUserInput('+') ;
+                                calculatorProvider.addProcess('+') ;
                               });
                             })
                     ),
@@ -248,8 +317,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                       text: '1',
                                       press: (){
                                         setState(() {
-                                          userInput += '1' ;
-                                          process += '1' ;
+                                          // userInput += '1' ;
+                                          // process += '1' ;
+
+                                          calculatorProvider.addUserInput('1') ;
+                                          calculatorProvider.addProcess('1') ;
                                         });
                                       })
                               ),
@@ -259,8 +331,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                       text: '2',
                                       press: (){
                                         setState(() {
-                                          userInput += '2' ;
-                                          process += '2' ;
+                                          // userInput += '2' ;
+                                          // process += '2' ;
+
+                                          calculatorProvider.addUserInput('2') ;
+                                          calculatorProvider.addProcess('2') ;
                                         });
                                       })
                               ),
@@ -270,8 +345,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                       text: '3',
                                       press: (){
                                         setState(() {
-                                          userInput += '3' ;
-                                          process += '3' ;
+                                          // userInput += '3' ;
+                                          // process += '3' ;
+
+                                          calculatorProvider.addUserInput('3') ;
+                                          calculatorProvider.addProcess('3') ;
                                         });
                                       })
                               ),
@@ -285,8 +363,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                       text: '0',
                                       press: (){
                                         setState(() {
-                                          userInput += '0' ;
-                                          process += '0' ;
+                                          // userInput += '0' ;
+                                          // process += '0' ;
+
+                                          calculatorProvider.addUserInput('0') ;
+                                          calculatorProvider.addProcess('0') ;
                                         });
                                       })
                               ),
@@ -296,8 +377,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                       text: '.',
                                       press: (){
                                         setState(() {
-                                          userInput += '.' ;
-                                          process += '.' ;
+                                          // userInput += '.' ;
+                                          // process += '.' ;
+
+                                          calculatorProvider.addUserInput('.') ;
+                                          calculatorProvider.addProcess('.') ;
                                         });
                                       })
                               ),
@@ -315,29 +399,56 @@ class _MyHomePageState extends State<MyHomePage> {
                             backgroundColor: Colors.deepOrangeAccent,
                             press: () {
                               // String userInput = "3-2x3÷3";
-                              String finaluserinput = userInput;
-                              finaluserinput = userInput.replaceAll('x', '*').replaceAll('÷', '/').replaceAll('%', '/100');
-                              print(finaluserinput) ;
+                              // String finaluserinput = userInput;
+                              // finaluserinput = userInput.replaceAll('x', '*').replaceAll('÷', '/').replaceAll('%', '/100');
+                              // // print(finaluserinput) ;
+                              // calculatorProvider.setUserInput(userInput) ;
+                              String res = calculatorProvider.getResult() ;
+                              if(res == 'error'){
+                                setState(() {
+                                  calculatorProvider.clearAll() ;
+                                });
+                              }else{
+                                setState(() {
+                                  // userInput = "" ;
+                                  // process = "" ;
+                                  // answer = res ;
+                                  calculatorProvider.setUserInput('');
+                                  calculatorProvider.setProcess('');
+                                  calculatorProvider.setAnswer(res);
+                                });
 
-                              try{
-                                Parser p = Parser();
-                                Expression exp = p.parse(finaluserinput);
-                                ContextModel cm = ContextModel();
-                                double eval = exp.evaluate(EvaluationType.REAL, cm);
-                                String res = eval.toString();
-                                setState(() {
-                                  userInput = "" ;
-                                  process = "" ;
-                                  answer = res ;
-                                });
-                              }catch(error){
-                                print(error) ;
-                                setState(() {
-                                  userInput = "" ;
-                                  process = "" ;
-                                  answer = "0";
-                                });
                               }
+
+                              // try{
+                              //   String res = calculatorProvider.getResult() ;
+                              //   print(res) ;
+                              //   // Parser p = Parser();
+                              //   // Expression exp = p.parse(finaluserinput);
+                              //   // ContextModel cm = ContextModel();
+                              //   // double eval = exp.evaluate(EvaluationType.REAL, cm);
+                              //   // // print(eval.ceilToDouble()) ;
+                              //   // String res = eval.toStringAsFixed(8).toString();
+                              //   // if(res.lastIndexOf('.0') > 0){
+                              //   //   res = double.parse(res).toInt().toString() ;
+                              //   // }
+                              //   setState(() {
+                              //     userInput = "" ;
+                              //     process = "" ;
+                              //     answer = res ;
+                              //     calculatorProvider.setUserInput('');
+                              //     calculatorProvider.setProcess('');
+                              //     calculatorProvider.setAnswer(res);
+                              //   });
+                              // }catch(error){
+                              //   // print(error) ;
+                              //   setState(() {
+                              //     calculatorProvider.clearAll() ;
+                              //     // userInput = "" ;
+                              //     // process = "" ;
+                              //     // answer = "0";
+                              //   });
+                              // }
                             }
                         )
                     ),
@@ -345,50 +456,56 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            Container(
-                width: double.infinity,
-                color: Colors.green,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: RadiusButton(
-                          text: 'Dark',
-                          color: Colors.black,
-                          backgroundColor: Colors.white,
-                          press: (){
+            // SizedBox(height: 10),
+            // const Divider(
+            //   height: 1,
+            //   thickness: 0,
+            //   indent: 0,
+            //   endIndent: 0,
+            //   color: Colors.black,
+            // ),
+            // Container(
+            //     width: double.infinity,
+            //     child: Row(
+            //       children: const [
+            //         Expanded(
+            //             child: Text(
+            //               '主題顏色切換',
+            //               style: TextStyle(
+            //                   fontSize: 20
+            //               ),
+            //             )
+            //         ),
+            //       ],
+            //     )
+            // ),
+            // SizedBox(height: 10),
+            // Container(
+            //     width: double.infinity,
+            //     child: Row(
+            //       children: [
+            //         Expanded(
+            //           child: RadiusButton(
+            //               text: 'Red',
+            //               color: Colors.black,
+            //               backgroundColor: Colors.red,
+            //               press: (){
+            //                 themeProvider.setThemeType(ThemeType.red, ThemeType.redDark) ;
+            //               }),
+            //         ),
+            //         Expanded(
+            //           child: RadiusButton(
+            //               text: 'Blue',
+            //               color: Colors.black,
+            //               backgroundColor: Colors.blue,
+            //               press: (){
+            //                 themeProvider.setThemeType(ThemeType.blue, ThemeType.blueDark) ;
+            //               }),
+            //         ),
+            //       ],
+            //     )
+            // ),
 
-                          }),
-                    ),
-                    Expanded(
-                      child: RadiusButton(
-                          text: 'Light',
-                          color: Colors.black,
-                          backgroundColor: Colors.white,
-                          press: (){
-
-                          }),
-                    ),
-                    Expanded(
-                      child: RadiusButton(
-                          text: 'Red',
-                          color: Colors.black,
-                          backgroundColor: Colors.white,
-                          press: (){
-
-                          }),
-                    ),
-                    Expanded(
-                      child: RadiusButton(
-                          text: 'Blue',
-                          color: Colors.black,
-                          backgroundColor: Colors.white,
-                          press: (){
-
-                          }),
-                    ),
-                  ],
-                )
-            )
 
           ],
 
@@ -428,7 +545,7 @@ class RadiusButton extends StatelessWidget {
             shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
             primary: Colors.white,
-            backgroundColor: backgroundColor ?? materialBlack.shade400,
+            backgroundColor: backgroundColor ?? Theme.of(context).primaryColorDark,
           ),
           onPressed: press as void Function()?,
           child: Text(
@@ -440,6 +557,42 @@ class RadiusButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// class SwitchButton extends StatelessWidget {
+//   const SwitchButton({
+//     Key? key,
+//     this.isDarkMode,
+//     this.press
+//   }) : super(key: key);
+//
+//   final bool? isDarkMode;
+//   final Function? press;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Switch.adaptive(
+//         value: isDarkMode ?? false,
+//         onChanged: press as bool Function(bool),
+//     );
+//   }
+// }
+
+
+class ChangeThemeDarkSwitchButton extends StatelessWidget {
+  const ChangeThemeDarkSwitchButton({
+    Key? key
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context) ;
+    return Switch.adaptive(
+      value:themeProvider.isDarkMode,
+      onChanged: (value){
+        themeProvider.toggleTheme(value) ;
+      },
     );
   }
 }
