@@ -51,14 +51,14 @@ void main(){
       await tester.pumpWidget(MaterialApp(
         home: Material(
           child:RadiusButton(
-            text: '1',
+            text: '2',
             press: (){
               flag = true ;
             }),
         ),
       ));
 
-      final text= find.text('1');
+      final text= find.text('2');
       final button = find.byType(RadiusButton);
       // ACT
       await tester.tap(button);
