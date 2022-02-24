@@ -9,7 +9,7 @@ on:
     branches: [ master ]
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  fluter_test:
+  flutter_test:
     name: Run flutter test and analyz
     runs-on: ubuntu-latest
     steps:
@@ -37,10 +37,10 @@ jobs:
           channel: "stable"
       - run: flutter pub get
       - run: flutter clean
-      - run: flutter bulid ios --no-codesign
+      - run: flutter bulid ios --release --no-codesign
   build_appbundle:
     name: Build Flutter ( Android)
-    needs: [ flutter_test ]
+    needs: [flutter_test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
