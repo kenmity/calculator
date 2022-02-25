@@ -116,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         flex: 1,
                         child: RadiusButton(
                             text: 'CE',
+                            backgroundColor: const Color.fromRGBO(251, 85, 85, 1.0),
                             press: (){
                               setState(() {
 
@@ -353,6 +354,20 @@ class _MyHomePageState extends State<MyHomePage> {
                                         });
                                       })
                               ),
+                              Expanded(
+                                  flex: 1,
+                                  child: RadiusButton(
+                                      text: '.',
+                                      press: (){
+                                        setState(() {
+                                          // userInput += '.' ;
+                                          // process += '.' ;
+
+                                          calculatorProvider.addUserInput('.') ;
+                                          calculatorProvider.addProcess('.') ;
+                                        });
+                                      })
+                              ),
                             ],
                           ),
                           Row(
@@ -372,85 +387,32 @@ class _MyHomePageState extends State<MyHomePage> {
                                       })
                               ),
                               Expanded(
-                                  flex: 1,
+                                  flex: 2,
                                   child: RadiusButton(
-                                      text: '.',
-                                      press: (){
-                                        setState(() {
-                                          // userInput += '.' ;
-                                          // process += '.' ;
-
-                                          calculatorProvider.addUserInput('.') ;
-                                          calculatorProvider.addProcess('.') ;
-                                        });
-                                      })
+                                      text: '=',
+                                      color: Colors.white,
+                                      backgroundColor: const Color.fromRGBO(
+                                          249, 147, 84, 1.0),
+                                      press: () {
+                                        String res = calculatorProvider.getResult() ;
+                                        if(res == 'error'){
+                                          setState(() {
+                                            calculatorProvider.clearAll() ;
+                                          });
+                                        }else{
+                                          setState(() {
+                                            calculatorProvider.setUserInput('');
+                                            calculatorProvider.setProcess('');
+                                            calculatorProvider.setAnswer(res);
+                                          });
+                                        }
+                                      }
+                                  )
                               ),
                             ],
                           )
                         ],
                       ),
-                    ),
-                    Expanded(
-                        flex: 1,
-                        child: RadiusButton(
-                            text: '=',
-                            height: 170,
-                            color: Colors.white,
-                            backgroundColor: Colors.deepOrangeAccent,
-                            press: () {
-                              // String userInput = "3-2x3÷3";
-                              // String finaluserinput = userInput;
-                              // finaluserinput = userInput.replaceAll('x', '*').replaceAll('÷', '/').replaceAll('%', '/100');
-                              // // print(finaluserinput) ;
-                              // calculatorProvider.setUserInput(userInput) ;
-                              String res = calculatorProvider.getResult() ;
-                              if(res == 'error'){
-                                setState(() {
-                                  calculatorProvider.clearAll() ;
-                                });
-                              }else{
-                                setState(() {
-                                  // userInput = "" ;
-                                  // process = "" ;
-                                  // answer = res ;
-                                  calculatorProvider.setUserInput('');
-                                  calculatorProvider.setProcess('');
-                                  calculatorProvider.setAnswer(res);
-                                });
-
-                              }
-
-                              // try{
-                              //   String res = calculatorProvider.getResult() ;
-                              //   print(res) ;
-                              //   // Parser p = Parser();
-                              //   // Expression exp = p.parse(finaluserinput);
-                              //   // ContextModel cm = ContextModel();
-                              //   // double eval = exp.evaluate(EvaluationType.REAL, cm);
-                              //   // // print(eval.ceilToDouble()) ;
-                              //   // String res = eval.toStringAsFixed(8).toString();
-                              //   // if(res.lastIndexOf('.0') > 0){
-                              //   //   res = double.parse(res).toInt().toString() ;
-                              //   // }
-                              //   setState(() {
-                              //     userInput = "" ;
-                              //     process = "" ;
-                              //     answer = res ;
-                              //     calculatorProvider.setUserInput('');
-                              //     calculatorProvider.setProcess('');
-                              //     calculatorProvider.setAnswer(res);
-                              //   });
-                              // }catch(error){
-                              //   // print(error) ;
-                              //   setState(() {
-                              //     calculatorProvider.clearAll() ;
-                              //     // userInput = "" ;
-                              //     // process = "" ;
-                              //     // answer = "0";
-                              //   });
-                              // }
-                            }
-                        )
                     ),
                   ],
                 ),
